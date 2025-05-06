@@ -1,0 +1,9 @@
+# Secrets
+.env
+
+# Python virtual environment
+myenv/
+
+# Data files
+data/*.csv
+__pycache__/
