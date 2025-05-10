@@ -7,3 +7,24 @@ myenv/
 # Data files
 data/*.csv
 __pycache__/
+
+# Spring Boot (Maven)
+backend/backend/target/
+backend/backend/.classpath
+backend/backend/.project
+backend/backend/.settings/
+backend/backend/.idea/
+backend/backend/*.iml
+**/application.properties
+compose.yaml
+
+# Logs
+backend/backend/logs/
+backend/backend/*.log
+
+# OS junk
+*.DS_Store
+*.swp
+
+# Environment files (you may use application-dev.properties for secrets)
+backend/backend/src/main/resources/application-*.properties
