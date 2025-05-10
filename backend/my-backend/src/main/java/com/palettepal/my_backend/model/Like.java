@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -14,8 +16,14 @@ public class Like {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ID;
 
-    private Long userId;
-    private String videoID;
+    @ManyToOne
+    @JoinColumn(name = "video_id", referencedColumnName = "video_id")
+    private Video video;
+    
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
     private String mood;
     private String skillLevel;
     private boolean liked;
@@ -25,10 +33,10 @@ public class Like {
 
     }
 
-    public Like(Long userID, String videoID, String mood, String skillLevel, 
+    public Like(User user, Video video, String mood, String skillLevel, 
     boolean liked) {
-        this.userId = userID;
-        this.videoID = videoID;
+        this.user = user;
+        this.video = video;
         this.mood = mood;
         this.skillLevel = skillLevel;
         this.liked= liked;
@@ -36,11 +44,11 @@ public class Like {
 
     // getters and setters
     public Long getId() { return ID; }
-    public Long getUserID() { return userId; }
-    public void setuserID(Long userID) { this.userId = userID; }
+    public User getUser() { return user; }
+    public void setuser(User user) { this.user = user; }
 
-    public String getVideoID() { return videoID; }
-    public void setVideoID(String videoID) { this.videoID = videoID; }
+    public Video getVideo() { return video; }
+    public void setVideo(Video video) { this.video = video; }
 
     public String getMood() { return mood; }
     public void setMood(String mood) { this.mood = mood; }
