@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS videos (
     video_id TEXT PRIMARY KEY,
     title TEXT,
-    description TEXT,
+    video_description TEXT,
     channel_title TEXT,
     publish_time TEXT,
     thumbnail_url TEXT,

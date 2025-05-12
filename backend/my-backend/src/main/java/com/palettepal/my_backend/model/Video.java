@@ -1,7 +1,9 @@
 package com.palettepal.my_backend.model;
 
-import jakarta.persistence.*;
-import java.util.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "videos")
@@ -13,7 +15,7 @@ public class Video {
 
     private String title;
 
-    @Column(length = 2000)
+    @Column(name = "video_description")
     private String description;
 
     private String channelTitle;
@@ -27,9 +29,6 @@ public class Video {
     private double durationMinutes;
 
     private String formattedDuration;
-
-    @OneToMany(mappedBy = "video", cascade = CascadeType.ALL)
-    private List<Like> likes = new ArrayList<>();
 
     public Video() {}
 
@@ -118,14 +117,6 @@ public class Video {
 
     public void setFormattedDuration(String formattedDuration) {
         this.formattedDuration = formattedDuration;
-    }
-
-    public List<Like> getLikes() {
-        return likes;
-    }
-
-    public void setLikes(List<Like> likes) {
-        this.likes = likes;
     }
 
 }

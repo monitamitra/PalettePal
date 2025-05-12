@@ -14,49 +14,35 @@ public class Like {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ID;
+    private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "video_id", referencedColumnName = "video_id")
-    private Video video;
-    
+    private String videoId;
+
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
     private String mood;
     private String skillLevel;
-    private boolean liked;
 
     // Constructors
-    public Like() {
+    public Like() {}
 
-    }
-
-    public Like(User user, Video video, String mood, String skillLevel, 
-    boolean liked) {
+    public Like(User user, String videoId, String mood, String skillLevel) {
         this.user = user;
-        this.video = video;
+        this.videoId = videoId;
         this.mood = mood;
         this.skillLevel = skillLevel;
-        this.liked= liked;
     }
 
-    // getters and setters
-    public Long getId() { return ID; }
+    // Getters and setters
+    public Long getId() { return id; }
+    public String getVideoId() { return videoId; }
+    public void setVideoId(String videoId) { this.videoId = videoId; }
     public User getUser() { return user; }
-    public void setuser(User user) { this.user = user; }
-
-    public Video getVideo() { return video; }
-    public void setVideo(Video video) { this.video = video; }
-
+    public void setUser(User user) { this.user = user; }
     public String getMood() { return mood; }
     public void setMood(String mood) { this.mood = mood; }
-
     public String getSkillLevel() { return skillLevel; }
     public void setSkillLevel(String skillLevel) { this.skillLevel = skillLevel; }
-
-    public boolean isLiked() { return liked; }
-    public void setLiked(boolean liked) { this.liked = liked; }
-    
 }
