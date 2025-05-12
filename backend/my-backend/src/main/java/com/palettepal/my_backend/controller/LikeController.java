@@ -73,9 +73,7 @@ public class LikeController {
         //     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         Like like = likeRepository.findByUserIdAndVideoId(userPrincipal.getId(), videoId);
-        System.out.println("*******IN DELETE METHOD!!********");
         if (like != null) {
-            System.out.println("*******Video is NOT NULL!!********");
             likeRepository.delete(like);
         }
 }
