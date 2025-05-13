@@ -38,8 +38,8 @@ likes_df, videos_df = load_data()
 
 # preprocessing text data to make it easy to find recs
 videos_df["title"] = videos_df["title"].fillna('')
-videos_df["description"] = videos_df["description"].fillna('')
-videos_df["text"] = (videos_df["title"] + " " + videos_df["description"]).str.lower().str.strip()
+videos_df["video_description"] = videos_df["video_description"].fillna('')
+videos_df["text"] = (videos_df["title"] + " " + videos_df["video_description"]).str.lower().str.strip()
 
 # generate content based similarity matrix
 tfidf = TfidfVectorizer(stop_words="english")
@@ -57,7 +57,8 @@ def get_similar_content_videos(video_id, top_k=5):
 # collaborative filtering
 def get_user_item_matrix(mood, skill_level):
     mapped_mood = map_mood_nlp(mood)
-    subset = likes_df[(likes_df["mood"] == mapped_mood) & (likes_df["skill_level"] == skill_level)]
+    mapped_moods = likes_df["mood"].apply(map_mood_nlp)
+    subset = likes_df[(mapped_moods == mapped_mood) & (likes_df["skill_level"] == skill_level)]
     return pd.crosstab(subset["user_id"], subset["video_id"])
 
 def get_similar_users(user_id, mood, skill_level, top_k=3):
@@ -69,20 +70,22 @@ def get_similar_users(user_id, mood, skill_level, top_k=3):
     return matrix.sort_values("similarity", ascending=False).iloc[1:top_k+1].index.tolist()
 
 def recommend_from_users(user_id, mood, skill_level):
-    mood = map_mood_nlp(mood)
+    mapped_mood = map_mood_nlp(mood)
     similar_users = get_similar_users(user_id, mood, skill_level)
     if not similar_users:
         return []
+    mapped_likes_moods = likes_df["mood"].apply(map_mood_nlp)
     sim_likes = likes_df[
         (likes_df["user_id"].isin(similar_users)) &
-        (map_mood_nlp(likes_df["mood"]) == mood) &
+        (mapped_likes_moods == mapped_mood) &
         (likes_df["skill_level"] == skill_level)
     ]
     user_liked = likes_df[
         (likes_df["user_id"] == user_id) &
-        (map_mood_nlp(likes_df["mood"]) == mood) &
+        (mapped_likes_moods == mapped_mood) &
         (likes_df["skill_level"] == skill_level)
     ]["video_id"].tolist()
+
     recs = sim_likes[~sim_likes["video_id"].isin(user_liked)]
     return recs["video_id"].value_counts().index.tolist()
 
