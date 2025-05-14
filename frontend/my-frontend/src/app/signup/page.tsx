@@ -1,9 +1,17 @@
 "use client";
 import AuthForm from "../components/AuthForm";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function SignupPage() {
-    const router = useRouter()
+    const router = useRouter();
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token) {
+        router.push("/");
+        }
+    }, [router]);
 
     const handleSignup = async (username: string, password: string) => {
         try{
