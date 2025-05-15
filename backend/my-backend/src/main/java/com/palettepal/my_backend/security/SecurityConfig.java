@@ -1,5 +1,7 @@
 package com.palettepal.my_backend.security;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -10,54 +12,66 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.palettepal.my_backend.repository.UserRepository;
 
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
+
     private final UserRepository userRepository;
 
     public SecurityConfig(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-   @Bean
+    @Bean
     public UserDetailsService userDetailsService() {
         return username -> userRepository.findByUsername(username)
             .map(UserPrincipal::new)
             .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 
-
-    // This method defines the main security configuration for the entire app
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // Disable CSRF protection since we're working with stateless APIs (not browser forms)
             .csrf(csrf -> csrf.disable())
 
-            // Define which endpoints are open to the public and which require auth
+            // Enable CORS in the filter chain
+            .cors(cors -> {})
+
             .authorizeHttpRequests(auth -> auth
-                // Allow anyone to register or log in without authentication
                 .requestMatchers("/auth/**").permitAll()
-                // All other endpoints require a valid JWT
+                //.requestMatchers("/videos/**").permitAll() // allow video endpoints temporarily
                 .anyRequest().authenticated()
             )
 
-            // Add our custom JWT filter to the security filter chain
             .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
-        return http.build(); // Return the fully configured filter chain
+        return http.build();
     }
 
-    // Registers our JWT filter as a bean so Spring can use it
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:3000")); // your frontend
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*")); // includes Authorization
+        config.setAllowCredentials(true); // if using cookies or Authorization headers
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+
     @Bean
     public JwtFilter jwtFilter() {
         return new JwtFilter();
     }
 
-    // Password encoder bean — used to hash passwords with BCrypt
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
