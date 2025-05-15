@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from "./context/AuthContext";
 import { Poppins } from "next/font/google";
+import ClientLayout from "./components/ClientLayout";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -22,7 +23,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={`${poppins.variable} font-sans`}>
         <AuthProvider>
-          {children}
+          <ClientLayout>
+               {children}
+          </ClientLayout>
         </AuthProvider>
       </body>
     </html>

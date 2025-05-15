@@ -56,7 +56,7 @@ export default function VideoDetailPage() {
        
 
       <p className="text-gray-700 mb-2">{video.channelTitle}</p>
-      <p className="text-black-600 whitespace-pre-line">
+      <p className="text-black-600 whitespace-pre-wrap break-words">
         {isExpanded ? video.description : truncateDescription(video.description)}
      </p>
      {video.description && video.description.length > 150 && (
