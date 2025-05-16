@@ -6,7 +6,7 @@ import { useState } from "react";
 export default function ClientLayout({children}: {children: React.ReactNode}) {
     const pathName = usePathname();
     const hideSidebar = pathName === "/login" || pathName === "/signup";
-    const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isCollapsed, setIsCollapsed] = useState(true);
 
     return (
     <div className="h-screen w-full">
