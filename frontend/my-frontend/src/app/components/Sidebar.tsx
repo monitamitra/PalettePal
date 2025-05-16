@@ -14,9 +14,9 @@ export default function Sidebar({ isCollapsed, toggleCollapse }: {
         duration-300 flex flex-col ${isCollapsed ? "w-16" : "w-48"}`}>
       
       <div className="h-16 flex items-center justify-center px-2">
-        <button onClick={toggleCollapse} className="text-xl hover:bg-gray-200 p-2 
-        cursor-pointer rounded">
-          ☰</button>
+        <button onClick={toggleCollapse} className="text-xl font-semibold 
+        hover:bg-gray-200 p-2 cursor-pointer rounded">
+          ☰  PalettePal</button>
       </div>
 
         <div className="flex flex-col gap-4 p-4 text-sm">

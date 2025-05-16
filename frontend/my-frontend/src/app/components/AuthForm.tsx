@@ -31,11 +31,11 @@ export default function AuthForm({
     
     
     return (
-        <div className="min-h-screen flex items-center justify-center bg-cover 
-        bg-center bg-no-repeat"
+        <div className="h-screen w-screen overflow-hidden flex items-center 
+        justify-center bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: "url('/background.jpg')" }}>
             
-            <form className="bg-white rounded-2xl shadow-x2 px-12 py-15" 
+            <form className="bg-white rounded-2xl shadow-x2 px-12 py-15 z-10" 
                 onSubmit = {handleSubmit}>
                 <h1 className="font-bold text-2xl text-center p-5px mb-8">{title}</h1>
                 
@@ -57,7 +57,7 @@ export default function AuthForm({
 
                 <button className="border text-white font-medium text-center mb-5 
                     px-8 py-1.5 mx-auto rounded-lg block" 
-                    style={{backgroundColor: "#FF92A5"}} 
+                    style={{backgroundColor: "#2E2EFF"}} 
                     type = "submit" disabled = {loading}>
                     {loading ? "Loading" : buttonLabel}
                 </button>
@@ -67,7 +67,7 @@ export default function AuthForm({
                     "Already have an account? "}
                     <Link href={alternateLink}
                     className="font-bold hover:underline"
-                    style={{ color: "#FF92A5"}}
+                    style={{ color: "#2E2EFF"}}
                     >
                         {alternateLabel}
                     </Link>

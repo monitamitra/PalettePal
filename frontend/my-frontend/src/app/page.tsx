@@ -36,12 +36,15 @@ export default function Home() {
   };
 
   return (
-    <main className="px-6 py-5 max-w-5xl mx-auto">
+    <main>
+       <div className="bg-cover bg-center bg-no-repeat w-full pb-5"
+          style={{ backgroundImage: "url('/background-app.jpeg')" }}>
+
         <form onSubmit={handleSearch}
-          className="px-6 py-5">
+          className="px-6 py-5" >
           <div className="relative w-full max-w-2xl mx-auto mb-6">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 
-            text-gray-400 w-5 h-5">
+            text-gray-400 bg-white w-5 h-5">
             </Search>
 
             {query && 
@@ -53,7 +56,7 @@ export default function Home() {
 
             <input
               className="w-full border border-gray-300 bg-gray-100 rounded-full 
-              px-10 py-3 pr-10 font-semibold pl-12"
+              px-10 py-3 pr-10 font-semibold pl-12 bg-white"
               type="text"
               placeholder="Search tutorials..."
               value={query}
@@ -63,8 +66,10 @@ export default function Home() {
         </form>    
 
         <MoodSkillSelector selectedMood={mood} setMood={setMood} selectedSkill={skill}
-          setSkill={setSkill}
-/>
+          setSkill={setSkill}/>
+          
+      </div>
+        
 
         {videos.length > 0 && (
           

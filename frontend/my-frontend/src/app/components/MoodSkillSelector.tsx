@@ -20,7 +20,7 @@ export default function MoodSkillSelector({
 }) {
     return (
         <div className="w-sm flex justify-center gap-8 mb-6 border px-4 py-4 
-            rounded-md mx-auto">
+            rounded-md mx-auto bg-white">
             
             <div className="flex flex-col">
                 <label className="text-sm font-medium mb-2">Mood</label>
