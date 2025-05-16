@@ -53,8 +53,8 @@ public class LikeController {
     
     User user = userRepository.findById(userPrincipal.getId())
         .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-    String mood = payload.get("mood");
-    String skillLevel = payload.get("skillLevel");
+    String mood = payload.get("mood").toLowerCase();
+    String skillLevel = payload.get("skillLevel").toLowerCase();
 
     Like like = new Like(user, videoId, mood, skillLevel);
     like.setUser(user);
@@ -77,5 +77,5 @@ public class LikeController {
         if (like != null) {
             likeRepository.delete(like);
         }
-}
+    }
 }

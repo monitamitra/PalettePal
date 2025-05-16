@@ -37,6 +37,26 @@ export default function LikesPage() {
     fetchLikedVideos();
   }, []);
 
+  const handleUnlike = async (videoId: string) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      const res = await fetch(`http://localhost:8080/likes/${videoId}`, {
+        method: "DELETE", 
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+
+      if (!res.ok) throw new Error("Failed to unlike video");
+      // Remove from local state
+      setLikedVideos(prev => prev.filter(video => video.videoId !== videoId));
+    } catch(err) {
+      console.error("Error unliking video:", err)
+    }
+  }
+
   return (
     <div>
       {loading ? (<p>Loading liked videos...</p>) : likedVideos.length === 0 ? (
@@ -67,11 +87,11 @@ export default function LikesPage() {
                   <p className="text-sm text-gray-700 line-clamp-3">{video.description}</p>
                 </div>
 
-                 <button onClick={() => setLiked(!liked)}
-                className="inline text-red-500 ml-2 
+                 <button onClick={(e) => { e.stopPropagation();
+                    handleUnlike(video.videoId);
+                  }} className="inline text-red-500 ml-2 
                     align-middle pl-2" aria-label="Toggle like">
-                {liked ? <Heart fill="currentColor" strokeWidth={2.5} /> : 
-                    <Heart strokeWidth={2.5} />}
+                <Heart fill="currentColor" strokeWidth={2.5} />
             </button>
               </div>
             </div>
