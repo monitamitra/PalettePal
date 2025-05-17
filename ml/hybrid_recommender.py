@@ -6,6 +6,8 @@ from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd
 from dotenv import load_dotenv
 import os
+import jwt
+from jwt.exceptions import InvalidTokenError
 
 load_dotenv()
 
@@ -107,12 +109,25 @@ def hybrid_recommend(user_id, video_id, mood, skill_level, top_k=5):
 
 app = Flask(__name__)
 
+JWT_SECRET = os.getenv('JWT_SECRET')
 
 @app.route("/recommend", methods=["POST"])
 def recommend():
+    # getting user id 
+    auth_header = request.headers.get('Authorization')
+    if not auth_header or not auth_header.startswith('Bearer '):
+        return jsonify({'error': 'Missing or invalid token'}), 401
+
+    token = auth_header.split(' ')[1]
+    try:
+        # Decode JWT and extract user_id from 'sub' claim
+        decoded = jwt.decode(token, JWT_SECRET, algorithms=['HS256'])
+        user_id = decoded.get('sub')
+    except InvalidTokenError:
+        return jsonify({'error': 'Invalid token'}), 401
+    
     try:
         data = request.get_json()
-        user_id = data["userId"]
         video_id = data["currentVideoId"]
         mood = data["currentMood"]
         skill = data["currentSkillLevel"]
@@ -126,9 +141,21 @@ def recommend():
 
 @app.route("/recommend_home", methods=["POST"])
 def recommend_from_home():
+    # getting user id 
+    auth_header = request.headers.get('Authorization')
+    if not auth_header or not auth_header.startswith('Bearer '):
+        return jsonify({'error': 'Missing or invalid token'}), 401
+
+    token = auth_header.split(' ')[1]
+    try:
+        # Decode JWT and extract user_id from 'sub' claim
+        decoded = jwt.decode(token, JWT_SECRET, algorithms=['HS256'])
+        user_id = decoded.get('sub')
+    except InvalidTokenError:
+        return jsonify({'error': 'Invalid token'}), 401
+    
     try:
         data = request.get_json()
-        user_id = data["userId"]
         mood = data["currentMood"]
         skill = data["currentSkillLevel"]
 

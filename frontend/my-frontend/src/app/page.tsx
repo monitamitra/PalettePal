@@ -41,6 +41,20 @@ export default function Home() {
       if (query.trim()) return;
 
       const token = localStorage.getItem("token");
+      try {
+        const res = await fetch("http://localhost:5001/recommend_home", {
+            method: "POST", 
+            headers: {
+              "Content-type": "application/json",
+              Authorization: `Bearer ${token}`, 
+            }, 
+            body: JSON.stringify({
+              
+            })
+        })
+      } catch(err) {
+
+      }
     }
   })
 
