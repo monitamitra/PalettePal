@@ -1,7 +1,7 @@
 "use client";
 import requireAuth from "./components/requireAuth";
 import { Search, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import MoodSkillSelector from "./components/MoodSkillSelector";
 
@@ -34,6 +34,15 @@ export default function Home() {
       setVideos([]);
     }
   };
+
+  useEffect(() => {
+    const fetchDefaultRecs = async () => {
+      // skip if user is searching
+      if (query.trim()) return;
+
+      const token = localStorage.getItem("token");
+    }
+  })
 
   return (
     <main >

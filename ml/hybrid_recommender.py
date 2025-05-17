@@ -107,7 +107,7 @@ def hybrid_recommend(user_id, video_id, mood, skill_level, top_k=5):
 
 app = Flask(__name__)
 
-# flask endpoint
+
 @app.route("/recommend", methods=["POST"])
 def recommend():
     try:
@@ -123,6 +123,25 @@ def recommend():
         print("❌ Error:", e)
         return jsonify({"error": str(e)}), 500
 
+
+@app.route("/recommend_home", methods=["POST"])
+def recommend_from_home():
+    try:
+        data = request.get_json()
+        user_id = data["userId"]
+        mood = data["currentMood"]
+        skill = data["currentSkillLevel"]
+
+        rec_ids = recommend_from_users(user_id, mood, skill)
+        if not rec_ids:
+            return jsonify([])
+
+        recs = videos_df[videos_df["video_id"].isin(rec_ids)].copy()
+        return jsonify(recs.to_dict(orient="records"))
+    except Exception as e:
+        print("❌ Error:", e)
+        return jsonify({"error": str(e)}), 500
+
+
 if __name__ == "__main__":
     app.run(port=5001, debug=True)
-
