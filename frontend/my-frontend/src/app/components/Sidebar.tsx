@@ -10,7 +10,7 @@ export default function Sidebar({ isCollapsed, toggleCollapse }: {
 
   return (
     <aside
-      className={`fixed top-0 left-0 h-screen bg-white shadow-md border-r pt-0 transition-all 
+      className={`fixed top-0 left-0 h-screen bg-white shadow-md pt-0 transition-all 
         duration-300 flex flex-col ${isCollapsed ? "w-16" : "w-48"}`}>
       
       <div className="h-16 flex items-center justify-center px-2">

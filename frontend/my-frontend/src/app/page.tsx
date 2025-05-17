@@ -36,8 +36,8 @@ export default function Home() {
   };
 
   return (
-    <main>
-       <div className="bg-cover bg-center bg-no-repeat w-full pb-5"
+    <main >
+       <div className="bg-cover bg-center bg-no-repeat w-full pb-5 mb-6"
           style={{ backgroundImage: "url('/background-app.jpeg')" }}>
 
         <form onSubmit={handleSearch}
@@ -73,7 +73,7 @@ export default function Home() {
 
         {videos.length > 0 && (
           
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 px-5">
           {videos.map((video) => (
             <div
               key={video.videoId} 

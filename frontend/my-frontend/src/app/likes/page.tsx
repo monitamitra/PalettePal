@@ -62,7 +62,7 @@ export default function LikesPage() {
       {loading ? (<p>Loading liked videos...</p>) : likedVideos.length === 0 ? (
         <p>You haven’t liked any videos yet.</p>) : (
         
-        <div className="flex flex-col gap-6"> {likedVideos.map((video) => (
+        <div className="flex flex-col gap-6 px-5 mt-8"> {likedVideos.map((video) => (
             <div key={video.videoId} onClick={() => router.push(`/videos/${video.videoId}`)}
               className="flex gap-4 bg-white rounded shadow p-4 hover:shadow-md 
               transition cursor-pointer"
