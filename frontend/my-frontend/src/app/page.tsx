@@ -6,19 +6,17 @@ import { useRouter } from "next/navigation";
 import MoodSkillSelector from "./components/MoodSkillSelector";
 
 export default function Home() {
-  requireAuth();
-
+  const router = useRouter();
   const [videos, setVideos] = useState<any[]>([]);
   const [query, setQuery] = useState("");
   const [mood, setMood] = useState("relaxed");
   const [skill, setSkill] = useState("intermediate");
   const [isDefaultRecs, setIsDefaultRecs] = useState(true);
-  const router = useRouter();
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsDefaultRecs(false);
-    
+
     const token = localStorage.getItem("token");
     try {
       const res = await fetch(`http://localhost:8080/videos/search?query=${encodeURIComponent(query)}`, {
@@ -37,6 +35,13 @@ export default function Home() {
       setVideos([]);
     }
   };
+
+   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login"); 
+    }
+  }, []);
 
   useEffect(() => {
     const fetchDefaultRecs = async () => {
@@ -115,10 +120,10 @@ export default function Home() {
         <div className="flex flex-col gap-6 px-5">
           {videos.map((video) => (
             <div
-              key={isDefaultRecs ? video.video_id : video.videoId} 
+              key={video.video_id || video.videoId} 
               className="flex gap-4 bg-white rounded shadow p-4 hover:shadow-md 
                 cursor-pointer transition border"
-              onClick={() => router.push(`/videos/${isDefaultRecs ? video.video_id : video.videoId}`)}
+              onClick={() => router.push(`/videos/${video.video_id || video.videoId}`)}
             >
               <div className="relative w-64 shrink-0">
                 <img
