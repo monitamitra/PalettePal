@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import psycopg2
+from sqlalchemy import create_engine, text
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd
@@ -10,16 +11,13 @@ from jwt.exceptions import InvalidTokenError
 from flask_cors import CORS
 
 load_dotenv()
-
+print("URL loaded:", os.getenv("DATABASE_URL"))
 # load sql data
 def load_data():
-    conn = psycopg2.connect( dbname=os.getenv("DB_NAME"), user=os.getenv("DB_USER"),
-    password=os.getenv("DB_PASSWORD"), host=os.getenv("DB_HOST"),
-    port=os.getenv("DB_PORT")
-)
-    likes = pd.read_sql("SELECT * FROM likes", conn)
-    videos = pd.read_sql("SELECT * FROM videos", conn)
-    conn.close()
+    engine = create_engine(os.getenv("DATABASE_URL"))
+
+    likes = pd.read_sql("SELECT * FROM likes", engine)
+    videos = pd.read_sql("SELECT * FROM videos", engine)
     return likes, videos
 
 likes_df, videos_df = load_data()
@@ -46,24 +44,45 @@ def get_similar_content_videos(video_id, top_k=5):
 def get_user_item_matrix():
     return pd.crosstab(likes_df["user_id"], likes_df["video_id"])
 
-def get_similar_users(user_id, top_k=3):
-    matrix = get_user_item_matrix()
+# Context-aware cosine similarity based user matching
+def get_similar_users(user_id, mood, skill_level, top_k=3):
+    # Filter likes to the same mood and skill level
+    context_df = likes_df[
+        (likes_df["mood"] == mood) &
+        (likes_df["skill_level"] == skill_level)
+    ]
+
+    # Pivot user-item matrix for this context only
+    matrix = pd.crosstab(context_df["user_id"], context_df["video_id"])
+
     if user_id not in matrix.index:
         return []
+
+    # Compute cosine similarity
     sims = cosine_similarity(matrix.loc[[user_id]], matrix)[0]
     matrix["similarity"] = sims
-    return matrix.sort_values("similarity", ascending=False).iloc[1:top_k+1].index.tolist()
 
-def recommend_from_users(user_id, mood, skill_level):
-    similar_users = get_similar_users(user_id)
+    return (
+        matrix.drop(index=user_id)
+              .sort_values("similarity", ascending=False)
+              .head(top_k)
+              .index
+              .tolist()
+    )
+
+# Collaborative filtering using similar users within same mood and skill
+def recommend_from_users(user_id, mood, skill_level, top_k_users=3):
+    similar_users = get_similar_users(user_id, mood, skill_level, top_k=top_k_users)
+
     if not similar_users:
         return []
-    
+
     sim_likes = likes_df[
         (likes_df["user_id"].isin(similar_users)) &
         (likes_df["mood"] == mood) &
         (likes_df["skill_level"] == skill_level)
     ]
+
     user_liked = likes_df[
         (likes_df["user_id"] == user_id) &
         (likes_df["mood"] == mood) &
