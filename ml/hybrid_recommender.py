@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify
 import psycopg2
-from sentence_transformers import SentenceTransformer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd
@@ -8,22 +7,9 @@ from dotenv import load_dotenv
 import os
 import jwt
 from jwt.exceptions import InvalidTokenError
+from flask_cors import CORS
 
 load_dotenv()
-
-# load nlp model and define mood mappings to group similar moods 
-group_keywords = ['relaxed', 'happy', 'focused', 'sad', 'inspired', 'anxious', 
-                  'bored','romantic', 'energetic', 'nostalgic', 'frustrated', 
-                  'lonely', 'calm','playful', 'creative']
-model = SentenceTransformer('all-MiniLM-L6-v2')
-group_vecs = model.encode(group_keywords)
-
-def map_mood_nlp(user_input, threshold=0.4):
-    user_vec = model.encode([user_input])
-    sims = cosine_similarity(user_vec, group_vecs)[0]
-    max_sim = sims.max()
-    best_match = group_keywords[sims.argmax()]
-    return best_match if max_sim >= threshold else user_input.lower()
 
 # load sql data
 def load_data():
@@ -57,14 +43,11 @@ def get_similar_content_videos(video_id, top_k=5):
     return videos_df.iloc[top_idxs][['video_id', 'title']]
 
 # collaborative filtering
-def get_user_item_matrix(mood, skill_level):
-    mapped_mood = map_mood_nlp(mood)
-    mapped_moods = likes_df["mood"].apply(map_mood_nlp)
-    subset = likes_df[(mapped_moods == mapped_mood) & (likes_df["skill_level"] == skill_level)]
-    return pd.crosstab(subset["user_id"], subset["video_id"])
+def get_user_item_matrix():
+    return pd.crosstab(likes_df["user_id"], likes_df["video_id"])
 
-def get_similar_users(user_id, mood, skill_level, top_k=3):
-    matrix = get_user_item_matrix(mood, skill_level)
+def get_similar_users(user_id, top_k=3):
+    matrix = get_user_item_matrix()
     if user_id not in matrix.index:
         return []
     sims = cosine_similarity(matrix.loc[[user_id]], matrix)[0]
@@ -72,19 +55,18 @@ def get_similar_users(user_id, mood, skill_level, top_k=3):
     return matrix.sort_values("similarity", ascending=False).iloc[1:top_k+1].index.tolist()
 
 def recommend_from_users(user_id, mood, skill_level):
-    mapped_mood = map_mood_nlp(mood)
-    similar_users = get_similar_users(user_id, mood, skill_level)
+    similar_users = get_similar_users(user_id)
     if not similar_users:
         return []
-    mapped_likes_moods = likes_df["mood"].apply(map_mood_nlp)
+    
     sim_likes = likes_df[
         (likes_df["user_id"].isin(similar_users)) &
-        (mapped_likes_moods == mapped_mood) &
+        (likes_df["mood"] == mood) &
         (likes_df["skill_level"] == skill_level)
     ]
     user_liked = likes_df[
         (likes_df["user_id"] == user_id) &
-        (mapped_likes_moods == mapped_mood) &
+        (likes_df["mood"] == mood) &
         (likes_df["skill_level"] == skill_level)
     ]["video_id"].tolist()
 
@@ -94,7 +76,6 @@ def recommend_from_users(user_id, mood, skill_level):
 
 # hybrid recommender method
 def hybrid_recommend(user_id, video_id, mood, skill_level, top_k=5):
-    mood = map_mood_nlp(mood)
     cbf_recs = get_similar_content_videos(video_id, top_k=top_k)
     cbf_videos = cbf_recs['video_id'].tolist()
     cf_videos = recommend_from_users(user_id, mood, skill_level)
@@ -108,8 +89,10 @@ def hybrid_recommend(user_id, video_id, mood, skill_level, top_k=5):
     return final_recs
 
 app = Flask(__name__)
+CORS(app, supports_credentials=True, 
+     allow_headers=["Content-Type", "Authorization"])
 
-JWT_SECRET = os.getenv('JWT_SECRET')
+JWT_SECRET = os.getenv('JWT_SECRET').encode("utf-8")
 
 @app.route("/recommend", methods=["POST"])
 def recommend():
@@ -147,11 +130,13 @@ def recommend_from_home():
         return jsonify({'error': 'Missing or invalid token'}), 401
 
     token = auth_header.split(' ')[1]
+    
     try:
         # Decode JWT and extract user_id from 'sub' claim
         decoded = jwt.decode(token, JWT_SECRET, algorithms=['HS256'])
         user_id = decoded.get('sub')
-    except InvalidTokenError:
+    except Exception as e:
+        print("❌ JWT decode error:", str(e))
         return jsonify({'error': 'Invalid token'}), 401
     
     try:
@@ -164,6 +149,7 @@ def recommend_from_home():
             return jsonify([])
 
         recs = videos_df[videos_df["video_id"].isin(rec_ids)].copy()
+        print(jsonify(recs.to_dict(orient="records")))
         return jsonify(recs.to_dict(orient="records"))
     except Exception as e:
         print("❌ Error:", e)

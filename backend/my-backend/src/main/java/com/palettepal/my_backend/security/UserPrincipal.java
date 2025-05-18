@@ -20,7 +20,7 @@ public class UserPrincipal implements UserDetails {
     }
 
     public String getUsername() {
-        return user.getUsername();
+        return user.getId();
     }
 
     @Override

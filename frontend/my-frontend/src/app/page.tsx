@@ -10,12 +10,15 @@ export default function Home() {
 
   const [videos, setVideos] = useState<any[]>([]);
   const [query, setQuery] = useState("");
-  const [mood, setMood] = useState("Relaxed");
-  const [skill, setSkill] = useState("Beginner");
+  const [mood, setMood] = useState("relaxed");
+  const [skill, setSkill] = useState("intermediate");
+  const [isDefaultRecs, setIsDefaultRecs] = useState(true);
   const router = useRouter();
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsDefaultRecs(false);
+    
     const token = localStorage.getItem("token");
     try {
       const res = await fetch(`http://localhost:8080/videos/search?query=${encodeURIComponent(query)}`, {
@@ -45,18 +48,26 @@ export default function Home() {
         const res = await fetch("http://localhost:5001/recommend_home", {
             method: "POST", 
             headers: {
-              "Content-type": "application/json",
+              "Content-Type": "application/json",
               Authorization: `Bearer ${token}`, 
             }, 
             body: JSON.stringify({
-              
+              currentMood: mood,
+              currentSkillLevel: skill,
             })
         })
-      } catch(err) {
 
+        if (!res.ok) throw new Error("Failed to fetch home recommendations");
+
+        const data = await res.json();
+        setVideos(data);
+
+      } catch(err) {
+          console.error("Error loading home recommendations: ", err)
       }
     }
-  })
+    fetchDefaultRecs();
+  }, [mood, skill])
 
   return (
     <main >
@@ -92,35 +103,43 @@ export default function Home() {
           setSkill={setSkill}/>
           
       </div>
-        
 
+          {isDefaultRecs && videos.length > 0 && (
+            <h2 className="text-xl font-semibold mb-4 px-5">
+              🎨 Artists similar to you liked...
+            </h2>
+          )}
+        
         {videos.length > 0 && (
           
         <div className="flex flex-col gap-6 px-5">
           {videos.map((video) => (
             <div
-              key={video.videoId} 
+              key={isDefaultRecs ? video.video_id : video.videoId} 
               className="flex gap-4 bg-white rounded shadow p-4 hover:shadow-md 
-                cursor-pointer transition"
-              onClick={() => router.push(`/videos/${video.videoId}`)}
+                cursor-pointer transition border"
+              onClick={() => router.push(`/videos/${isDefaultRecs ? video.video_id : video.videoId}`)}
             >
               <div className="relative w-64 shrink-0">
                 <img
-                  src={video.thumbnailUrl}
+                  src={isDefaultRecs ? video.thumbnail_url : video.thumbnailUrl}
                   alt={video.title}
                   className="rounded w-full h-36 object-cover"
                 />
 
                 <span className="absolute bottom-2 right-2 bg-black bg-opacity-75 text-white 
                     text-xs px-2 py-0.5 rounded">
-                  {video.formattedDuration}
+                  {isDefaultRecs ? video.formatted_duration : video.formattedDuration}
                 </span>
             </div>
               <div className="flex flex-col justify-between flex-grow">
                 <div>
                   <h3 className="text-lg font-semibold">{video.title}</h3>
-                  <p className="text-sm text-gray-600 mb-1">{video.channelTitle}</p>
-                  <p className="text-sm text-gray-700 line-clamp-3">{video.description}</p>
+                  <p className="text-sm text-gray-600 mb-1">{isDefaultRecs ? video.formatted_duration : 
+                    video.channelTitle}
+                  </p>
+                  <p className="text-sm text-gray-700 line-clamp-3">{isDefaultRecs ? 
+                    video.video_description : video.description}</p>
                 </div>
               </div>
             </div>

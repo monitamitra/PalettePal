@@ -8,7 +8,6 @@ export default function VideoDetailPage() {
     const {videoId}= useParams();
     const [video, setVideo] = useState<any>(null);
     const [isExpanded, setIsExpanded] = useState(false);
-    //const [liked, setLiked] = useState(false);
     const [isLiked, setIsLiked] = useState(false);
     const [mood, setMood] = useState("Relaxed");
     const [skillLevel, setSkillLevel] = useState("Beginner");
@@ -40,6 +39,35 @@ export default function VideoDetailPage() {
 
     fetchVideo();
   }, [videoId]);
+
+  useEffect(() => {
+    const fetchRecs = async () => {
+
+      const token = localStorage.getItem("token");
+      try {
+        const res = await fetch("http://localhost:5001/recommend", {
+            method: "POST", 
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`, 
+            }, 
+            body: JSON.stringify({
+              currentMood: mood,
+              currentSkillLevel: skillLevel,
+            })
+        })
+
+        if (!res.ok) throw new Error("Failed to fetch home recommendations");
+
+        const data = await res.json();
+        setVideos(data);
+
+      } catch(err) {
+          console.error("Error loading home recommendations: ", err)
+      }
+    }
+    fetchRecs();
+  }, [mood, skillLevel, videoId])
 
 
   const toggleLike = async () => {

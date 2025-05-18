@@ -37,6 +37,8 @@ public class JwtFilter extends OncePerRequestFilter {
             token = authHeader.substring(7); 
             // extract username from token
             username = jwtUtil.extractUsername(token); 
+
+            
         }
 
         // If username is found and no auth has been set yet
