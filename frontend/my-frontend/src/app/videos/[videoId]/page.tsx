@@ -48,7 +48,7 @@ export default function VideoDetailPage() {
 
       const token = localStorage.getItem("token");
       try {
-        const res = await fetch("http://localhost:5001/recommend", {
+        const res = await fetch("https://palettepal.onrender.com/recommend", {
             method: "POST", 
             headers: {
               "Content-Type": "application/json",

@@ -10,25 +10,24 @@ import jakarta.persistence.Table;
 public class Video {
 
     @Id
-    @Column(name = "video_id", nullable = false, unique = true)
+    @Column(name = "video_id")
     private String videoId;
 
     private String title;
 
-    @Column(name = "video_description")
-    private String description;
+    private String video_description;
 
-    private String channelTitle;
+    private String channel_title;
 
-    private String publishTime;
+    private String publish_time;
 
-    private String thumbnailUrl;
+    private String thumbnail_url;
 
-    private String videoUrl;
+    private String video_url;
 
-    private double durationMinutes;
+    private double duration_minutes;
 
-    private String formattedDuration;
+    private String formatted_duration;
 
     public Video() {}
 
@@ -37,13 +36,13 @@ public class Video {
                  double durationMinutes, String formattedDuration) {
         this.videoId = videoId;
         this.title = title;
-        this.description = description;
-        this.channelTitle = channelTitle;
-        this.publishTime = publishTime;
-        this.thumbnailUrl = thumbnailUrl;
-        this.videoUrl = videoUrl;
-        this.durationMinutes = durationMinutes;
-        this.formattedDuration = formattedDuration;
+        this.video_description = description;
+        this.channel_title = channelTitle;
+        this.publish_time = publishTime;
+        this.thumbnail_url = thumbnailUrl;
+        this.video_url = videoUrl;
+        this.duration_minutes = durationMinutes;
+        this.formatted_duration = formattedDuration;
     }
 
     // Getters and setters
@@ -64,59 +63,59 @@ public class Video {
     }
 
     public String getDescription() {
-        return description;
+        return video_description;
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.video_description = description;
     }
 
     public String getChannelTitle() {
-        return channelTitle;
+        return channel_title;
     }
 
     public void setChannelTitle(String channelTitle) {
-        this.channelTitle = channelTitle;
+        this.channel_title = channelTitle;
     }
 
     public String getPublishTime() {
-        return publishTime;
+        return publish_time;
     }
 
     public void setPublishTime(String publishTime) {
-        this.publishTime = publishTime;
+        this.publish_time = publishTime;
     }
 
     public String getThumbnailUrl() {
-        return thumbnailUrl;
+        return thumbnail_url;
     }
 
     public void setThumbnailUrl(String thumbnailUrl) {
-        this.thumbnailUrl = thumbnailUrl;
+        this.thumbnail_url = thumbnailUrl;
     }
 
     public String getVideoUrl() {
-        return videoUrl;
+        return video_url;
     }
 
     public void setVideoUrl(String videoUrl) {
-        this.videoUrl = videoUrl;
+        this.video_url = videoUrl;
     }
 
     public double getDurationMinutes() {
-        return durationMinutes;
+        return duration_minutes;
     }
 
     public void setDurationMinutes(double durationMinutes) {
-        this.durationMinutes = durationMinutes;
+        this.duration_minutes = durationMinutes;
     }
 
     public String getFormattedDuration() {
-        return formattedDuration;
+        return formatted_duration;
     }
 
     public void setFormattedDuration(String formattedDuration) {
-        this.formattedDuration = formattedDuration;
+        this.formatted_duration = formattedDuration;
     }
 
 }

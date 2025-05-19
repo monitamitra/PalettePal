@@ -50,7 +50,7 @@ export default function Home() {
 
       const token = localStorage.getItem("token");
       try {
-        const res = await fetch("http://localhost:5001/recommend_home", {
+        const res = await fetch("https://palettepal.onrender.com/recommend_home", {
             method: "POST", 
             headers: {
               "Content-Type": "application/json",

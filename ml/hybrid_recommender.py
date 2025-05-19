@@ -9,8 +9,7 @@ import os
 import jwt
 from jwt.exceptions import InvalidTokenError
 from flask_cors import CORS
-import time
-time.sleep(5)
+
 
 load_dotenv()
 print("URL loaded:", os.getenv("DATABASE_URL"))

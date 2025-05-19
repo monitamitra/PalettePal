@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import com.palettepal.my_backend.model.Video;
 
 public interface VideoRepository extends JpaRepository<Video, String> {
-    @Query("SELECT v FROM Video v WHERE LOWER(v.title) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(v.description) LIKE LOWER(CONCAT('%', :query, '%'))")
+    @Query("SELECT v FROM Video v WHERE LOWER(v.title) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(v.video_description) LIKE LOWER(CONCAT('%', :query, '%'))")
     List<Video> searchByQuery(@Param("query") String query);
 
     Optional<Video> findByVideoId(String videoId);
