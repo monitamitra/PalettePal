@@ -22,14 +22,14 @@ export default function VideoDetailPage() {
 
       try {
         // Fetch video details
-        const res = await fetch(`http://localhost:8080/videos/play/${videoId}`, {
+        const res = await fetch(`https://my-backend-late-star-5731.fly.dev/videos/play/${videoId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
         setVideo(data);
 
         // Fetch liked videos to check if this one is liked
-        const likesRes = await fetch(`http://localhost:8080/videos/liked`, {
+        const likesRes = await fetch(`https://my-backend-late-star-5731.fly.dev/videos/liked`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const likedData = await likesRes.json();
@@ -86,7 +86,7 @@ export default function VideoDetailPage() {
     try {
       if (isLiked) {
         // unlike
-        const res = await fetch(`http://localhost:8080/likes/${videoId}`, {
+        const res = await fetch(`https://my-backend-late-star-5731.fly.dev/likes/${videoId}`, {
         method: "DELETE", 
         headers: {
           Authorization: `Bearer ${token}`
@@ -98,7 +98,7 @@ export default function VideoDetailPage() {
 
       } else {
         // like 
-        const res = await fetch(`http://localhost:8080/likes/${videoId}`, {
+        const res = await fetch(`https://my-backend-late-star-5731.fly.dev/likes/${videoId}`, {
           method: "POST", 
           headers: {
             "Content-Type": "application/json",

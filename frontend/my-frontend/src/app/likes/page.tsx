@@ -16,7 +16,7 @@ export default function LikesPage() {
       if (!token) return;
 
       try {
-        const res = await fetch("http://localhost:8080/videos/liked", {
+        const res = await fetch("https://my-backend-late-star-5731.fly.dev/videos/liked", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -42,7 +42,7 @@ export default function LikesPage() {
     if (!token) return;
 
     try {
-      const res = await fetch(`http://localhost:8080/likes/${videoId}`, {
+      const res = await fetch(`https://my-backend-late-star-5731.fly.dev/likes/${videoId}`, {
         method: "DELETE", 
         headers: {
           Authorization: `Bearer ${token}`

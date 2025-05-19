@@ -19,7 +19,7 @@ export default function Home() {
 
     const token = localStorage.getItem("token");
     try {
-      const res = await fetch(`http://localhost:8080/videos/search?query=${encodeURIComponent(query)}`, {
+      const res = await fetch(`https://my-backend-late-star-5731.fly.dev/videos/search?query=${encodeURIComponent(query)}`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }

@@ -15,7 +15,7 @@ export default function SignupPage() {
 
     const handleSignup = async (username: string, password: string) => {
         try{
-            const res = await fetch("http://localhost:8080/auth/register", {
+            const res = await fetch("https://my-backend-late-star-5731.fly.dev/auth/register", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"}, 
                 body: JSON.stringify({username, password})
