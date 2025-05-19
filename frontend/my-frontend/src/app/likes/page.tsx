@@ -1,14 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { Heart, HeartOff } from "lucide-react";
+import { Heart } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function LikesPage() {
     const [likedVideos, setLikedVideos] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const [liked, setLiked] = useState(true);
     const router = useRouter();
+    const SPRINGBOOT_URL = process.env.NEXT_PUBLIC_SPRINGBOOT_URL;
 
     useEffect(() => {
     const fetchLikedVideos = async () => {
@@ -16,7 +15,7 @@ export default function LikesPage() {
       if (!token) return;
 
       try {
-        const res = await fetch("https://my-backend-late-star-5731.fly.dev/videos/liked", {
+        const res = await fetch(`${SPRINGBOOT_URL}/videos/liked`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -42,7 +41,7 @@ export default function LikesPage() {
     if (!token) return;
 
     try {
-      const res = await fetch(`https://my-backend-late-star-5731.fly.dev/likes/${videoId}`, {
+      const res = await fetch(`${SPRINGBOOT_URL}/likes/${videoId}`, {
         method: "DELETE", 
         headers: {
           Authorization: `Bearer ${token}`

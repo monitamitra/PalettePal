@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify
-import psycopg2
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd
@@ -10,9 +9,8 @@ import jwt
 from jwt.exceptions import InvalidTokenError
 from flask_cors import CORS
 
-
 load_dotenv()
-print("URL loaded:", os.getenv("DATABASE_URL"))
+
 # load sql data
 def load_data():
     engine = create_engine(os.getenv("DATABASE_URL"))
@@ -177,4 +175,5 @@ def recommend_from_home():
 
 
 if __name__ == "__main__":
-    app.run(port=5001, debug=True)
+    print("✅ Flask is starting on 0.0.0.0:8080")
+    app.run(host="0.0.0.0", port=8080)

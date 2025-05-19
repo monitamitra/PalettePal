@@ -5,6 +5,7 @@ import { useEffect } from "react";
 
 export default function SignupPage() {
     const router = useRouter();
+    const SPRINGBOOT_URL = process.env.NEXT_PUBLIC_SPRINGBOOT_URL;
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -15,7 +16,7 @@ export default function SignupPage() {
 
     const handleSignup = async (username: string, password: string) => {
         try{
-            const res = await fetch("https://my-backend-late-star-5731.fly.dev/auth/register", {
+            const res = await fetch(`${SPRINGBOOT_URL}/auth/register`, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"}, 
                 body: JSON.stringify({username, password})

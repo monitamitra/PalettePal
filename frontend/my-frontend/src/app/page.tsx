@@ -1,5 +1,4 @@
 "use client";
-import requireAuth from "./components/requireAuth";
 import { Search, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -12,6 +11,8 @@ export default function Home() {
   const [mood, setMood] = useState("relaxed");
   const [skill, setSkill] = useState("intermediate");
   const [isDefaultRecs, setIsDefaultRecs] = useState(true);
+  const SPRINGBOOT_URL = process.env.NEXT_PUBLIC_SPRINGBOOT_URL;
+  const FLASK_URL = process.env.NEXT_PUBLIC_FLASK_URL;
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,7 +20,7 @@ export default function Home() {
 
     const token = localStorage.getItem("token");
     try {
-      const res = await fetch(`https://my-backend-late-star-5731.fly.dev/videos/search?query=${encodeURIComponent(query)}`, {
+      const res = await fetch(`${SPRINGBOOT_URL}/videos/search?query=${encodeURIComponent(query)}`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -50,7 +51,7 @@ export default function Home() {
 
       const token = localStorage.getItem("token");
       try {
-        const res = await fetch("https://palettepal.onrender.com/recommend_home", {
+        const res = await fetch(`${FLASK_URL}/recommend_home`, {
             method: "POST", 
             headers: {
               "Content-Type": "application/json",

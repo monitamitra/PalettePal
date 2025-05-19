@@ -14,6 +14,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [hasMounted, setHasMounted] = useState(false);
   const router = useRouter();
+  const SPRINGBOOT_URL = process.env.NEXT_PUBLIC_SPRINGBOOT_URL;
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -23,7 +24,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (username: string, password: string) => {
     try {
-      const res = await fetch("https://my-backend-late-star-5731.fly.dev/auth/login", {
+      const res = await fetch(`${SPRINGBOOT_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Heart, HeartOff } from "lucide-react";
+import { Heart } from "lucide-react";
 import MoodSkillSelector from "../../components/MoodSkillSelector";
 
 export default function VideoDetailPage() {
@@ -14,6 +14,8 @@ export default function VideoDetailPage() {
     const [skillLevel, setSkillLevel] = useState("beginner");
     const [collabRecs, setCollabRecs] = useState<any[]>([]);
     const [contentRecs, setContentRecs] = useState<any[]>([]);
+    const SPRINGBOOT_URL = process.env.NEXT_PUBLIC_SPRINGBOOT_URL;
+    const FLASK_URL = process.env.NEXT_PUBLIC_FLASK_URL;
 
     useEffect(() => {
     const fetchVideo = async () => {
@@ -22,14 +24,14 @@ export default function VideoDetailPage() {
 
       try {
         // Fetch video details
-        const res = await fetch(`https://my-backend-late-star-5731.fly.dev/videos/play/${videoId}`, {
+        const res = await fetch(`${SPRINGBOOT_URL}/videos/play/${videoId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
         setVideo(data);
 
         // Fetch liked videos to check if this one is liked
-        const likesRes = await fetch(`https://my-backend-late-star-5731.fly.dev/videos/liked`, {
+        const likesRes = await fetch(`${SPRINGBOOT_URL}/videos/liked`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const likedData = await likesRes.json();
@@ -48,7 +50,7 @@ export default function VideoDetailPage() {
 
       const token = localStorage.getItem("token");
       try {
-        const res = await fetch("https://palettepal.onrender.com/recommend", {
+        const res = await fetch(`${FLASK_URL}/recommend`, {
             method: "POST", 
             headers: {
               "Content-Type": "application/json",
@@ -86,7 +88,7 @@ export default function VideoDetailPage() {
     try {
       if (isLiked) {
         // unlike
-        const res = await fetch(`https://my-backend-late-star-5731.fly.dev/likes/${videoId}`, {
+        const res = await fetch(`${SPRINGBOOT_URL}/likes/${videoId}`, {
         method: "DELETE", 
         headers: {
           Authorization: `Bearer ${token}`
@@ -98,7 +100,7 @@ export default function VideoDetailPage() {
 
       } else {
         // like 
-        const res = await fetch(`https://my-backend-late-star-5731.fly.dev/likes/${videoId}`, {
+        const res = await fetch(`${SPRINGBOOT_URL}/likes/${videoId}`, {
           method: "POST", 
           headers: {
             "Content-Type": "application/json",
