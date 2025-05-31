@@ -64,21 +64,21 @@
 **Frontend**
 - [Next.js](https://nextjs.org/) (TypeScript)
 - Tailwind CSS
-- Deployed on [Vercel](https://vercel.com)
+- Deployed on Vercel
 
 **Backend**
 - **Spring Boot (Java):**
   - User authentication (`/auth`)
   - Video & like APIs (`/videos`, `/likes`)
   - JWT validation and security
-  - Deployed on [Fly.io](https://fly.io)
+  - Deployed on Google Cloud
 
 **Recommender System**
 - **Flask (Python):**
   - `POST /recommend` for video detail recommendations
   - `POST /recommend_home` for home screen suggestions
   - TF-IDF + user-user collaborative filtering
-  - Deployed on [Fly.io](https://fly.io)
+  - Deployed on Google Cloud
 
 **Database**
 - PostgreSQL (hosted on [Neon.tech](https://neon.tech))
