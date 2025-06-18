@@ -107,8 +107,11 @@ def hybrid_recommend(user_id, video_id, mood, skill_level, top_k=5):
     return final_recs
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True, 
-     allow_headers=["Content-Type", "Authorization"])
+CORS(app,
+     origins=["https://palette-pal.vercel.app"],
+     supports_credentials=True,
+     allow_headers=["Content-Type", "Authorization"],
+     methods=["POST", "OPTIONS"])
 
 JWT_SECRET = os.getenv('JWT_SECRET').encode("utf-8")
 
