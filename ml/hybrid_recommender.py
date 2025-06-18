@@ -117,6 +117,11 @@ JWT_SECRET = os.getenv('JWT_SECRET').encode("utf-8")
 
 @app.route("/recommend", methods=["POST"])
 def recommend():
+
+    if request.method == "OPTIONS":
+        # Reply to preflight CORS request
+        return '', 204
+    
     # getting user id 
     auth_header = request.headers.get('Authorization')
     if not auth_header or not auth_header.startswith('Bearer '):
@@ -145,6 +150,11 @@ def recommend():
 
 @app.route("/recommend_home", methods=["POST"])
 def recommend_from_home():
+    
+    if request.method == "OPTIONS":
+        # Reply to preflight CORS request
+        return '', 204
+    
     # getting user id 
     auth_header = request.headers.get('Authorization')
     if not auth_header or not auth_header.startswith('Bearer '):
